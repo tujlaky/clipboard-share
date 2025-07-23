@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clipboard Share</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-100">
+  <div class="container mx-auto max-w-3xl px-4 py-6">
+    <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">Collaborative Clipboard</h1>
+    
+    <div class="flex mb-6">
+      <input type="text" id="message-input" placeholder="Type your text here..." 
+        class="flex-1 py-3 px-4 border border-gray-300 rounded-l-lg text-base focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
+      <button id="send-button" 
+        class="bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-r-lg transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-green-700">
+        Send
+      </button>
+    </div>
+    
+    <div class="flex justify-between text-sm text-gray-600 mb-6">
+      <span id="connection-status">Connecting...</span>
+      <span id="active-users"></span>
+    </div>
+    
+    <div id="message-container" class="space-y-4"></div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

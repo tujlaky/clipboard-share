@@ -1,0 +1,17 @@
+{
+  "name": "clipboard-share",
+  "version": "1.0.0",
+  "description": "Real-time collaborative clipboard app",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build:css": "tailwindcss -i ./src/input.css -o ./public/styles.css --watch"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.3.3"
+  }
+}
