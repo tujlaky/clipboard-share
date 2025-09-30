@@ -6,11 +6,14 @@ A simple real-time collaborative clipboard application built with Node.js, Expre
 
 - Real-time text sharing across connected clients
 - **File upload and sharing** (up to 50MB per file)
+- **Drag and drop file upload** anywhere on the page
+- **Auto-upload** on file drop for quick sharing
 - Image preview for uploaded images
 - Download button for all uploaded files
 - Copy button for text messages
 - Modern UI with Tailwind CSS
 - Upload progress indicator
+- Visual feedback when dragging files
 - Responsive design
 - No authentication required
 
@@ -57,9 +60,9 @@ npm run build:css
 4. Use the "Copy" button to copy text to your clipboard
 
 ### Sharing Files
-1. Click on the file upload area or drag and drop a file
-2. Press the "Upload" button
-3. Watch the progress indicator as the file uploads
+1. **Option 1**: Click on the file upload area and select a file
+2. **Option 2**: Drag and drop a file anywhere on the page
+3. Watch the progress indicator as the file uploads (auto-uploads on drop)
 4. The file appears as a card for all connected users
 5. Images show a preview that can be clicked to view full size
 6. Use the "Download" button to download the file

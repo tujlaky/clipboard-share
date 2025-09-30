@@ -52,6 +52,74 @@ fileInput.addEventListener('change', (e) => {
   }
 });
 
+// Drag and drop functionality for the entire page
+let dragCounter = 0;
+
+// Prevent default drag behaviors
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+  document.body.addEventListener(eventName, preventDefaults, false);
+});
+
+function preventDefaults(e) {
+  e.preventDefault();
+  e.stopPropagation();
+}
+
+// Highlight drop area when dragging over
+['dragenter', 'dragover'].forEach(eventName => {
+  document.body.addEventListener(eventName, highlight, false);
+});
+
+['dragleave', 'drop'].forEach(eventName => {
+  document.body.addEventListener(eventName, unhighlight, false);
+});
+
+function highlight(e) {
+  if (e.type === 'dragenter') {
+    dragCounter++;
+  }
+  if (dragCounter > 0) {
+    document.body.classList.add('drag-active');
+  }
+}
+
+function unhighlight(e) {
+  if (e.type === 'dragleave') {
+    dragCounter--;
+  } else if (e.type === 'drop') {
+    dragCounter = 0;
+  }
+  if (dragCounter === 0) {
+    document.body.classList.remove('drag-active');
+  }
+}
+
+// Handle dropped files
+document.body.addEventListener('drop', handleDrop, false);
+
+function handleDrop(e) {
+  const dt = e.dataTransfer;
+  const files = dt.files;
+  
+  if (files.length > 0) {
+    const file = files[0]; // Take the first file if multiple
+    
+    // Update file input
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
+    fileInput.files = dataTransfer.files;
+    
+    // Update UI
+    fileName.textContent = file.name;
+    fileName.classList.remove('hidden');
+    fileLabel.classList.add('hidden');
+    uploadButton.disabled = false;
+    
+    // Auto-upload the file
+    uploadFile();
+  }
+}
+
 // Upload file function
 async function uploadFile() {
   const file = fileInput.files[0];
