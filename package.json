@@ -4,10 +4,11 @@
   "description": "Real-time collaborative clipboard app",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "./qr.sh && node server.js",
     "build:css": "tailwindcss -i ./src/input.css -o ./public/styles.css --watch"
   },
   "dependencies": {
+    "caniuse-lite": "^1.0.30001746",
     "express": "^4.18.2",
     "multer": "^2.0.2",
     "socket.io": "^4.7.2"
