@@ -5,16 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Clipboard Share</title>
   <link rel="stylesheet" href="styles.css">
+  <script>
+    // Initialize theme before page renders to prevent flash
+    (function() {
+      const theme = localStorage.getItem('clipboard-share-theme');
+      if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
 </head>
-<body class="bg-gray-100 flex flex-col min-h-screen">
+<body class="bg-gray-100 dark:bg-gray-900 flex flex-col min-h-screen transition-colors duration-300">
   <div class="container mx-auto max-w-3xl px-4 py-6 flex-1 flex flex-col">
-    <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">Collaborative Clipboard</h1>
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-800 dark:text-white">Collaborative Clipboard</h1>
+      <button id="theme-toggle" class="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-300" title="Toggle dark mode">
+        <svg id="sun-icon" class="w-6 h-6 text-gray-700 dark:text-yellow-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+        </svg>
+        <svg id="moon-icon" class="w-6 h-6 text-gray-700 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+        </svg>
+      </button>
+    </div>
     
     <div class="mb-6">
       <!-- Text Input Row -->
       <div class="flex mb-3">
-        <input type="text" id="message-input" placeholder="Type your text here..." 
-          class="flex-1 py-3 px-4 border border-gray-300 rounded-l-lg text-base focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
+        <input type="text" id="message-input" placeholder="Type your text here..."
+          class="flex-1 py-3 px-4 border border-gray-300 dark:border-gray-600 rounded-l-lg text-base bg-white dark:bg-gray-800 text-gray-800 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
         <button id="send-button" 
           class="bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-r-lg transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-green-700">
           Send
@@ -24,12 +43,12 @@
       <!-- File Upload Row -->
       <div class="flex items-center">
         <label class="flex-1 cursor-pointer">
-          <div class="flex items-center justify-center py-3 px-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 transition-colors duration-300">
-            <svg class="w-5 h-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="flex items-center justify-center py-3 px-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-blue-500 dark:hover:border-blue-400 bg-white dark:bg-gray-800 transition-colors duration-300">
+            <svg class="w-5 h-5 mr-2 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
             </svg>
-            <span id="file-label" class="text-gray-600">Choose a file or drag and drop</span>
-            <span id="file-name" class="text-blue-600 hidden"></span>
+            <span id="file-label" class="text-gray-600 dark:text-gray-400">Choose a file or drag and drop</span>
+            <span id="file-name" class="text-blue-600 dark:text-blue-400 hidden"></span>
           </div>
           <input type="file" id="file-input" class="hidden">
         </label>
@@ -41,18 +60,18 @@
       </div>
       
       <!-- Upload Progress -->
-      <div id="upload-progress" class="hidden mt-3 bg-blue-100 rounded-lg p-3">
+      <div id="upload-progress" class="hidden mt-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg p-3">
         <div class="flex items-center justify-between mb-1">
-          <span class="text-sm text-blue-800">Uploading...</span>
-          <span id="progress-percent" class="text-sm text-blue-800">0%</span>
+          <span class="text-sm text-blue-800 dark:text-blue-300">Uploading...</span>
+          <span id="progress-percent" class="text-sm text-blue-800 dark:text-blue-300">0%</span>
         </div>
-        <div class="w-full bg-blue-200 rounded-full h-2">
-          <div id="progress-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+        <div class="w-full bg-blue-200 dark:bg-blue-900 rounded-full h-2">
+          <div id="progress-bar" class="bg-blue-600 dark:bg-blue-500 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
         </div>
       </div>
     </div>
     
-    <div class="flex justify-between text-sm text-gray-600 mb-6">
+    <div class="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-6">
       <span id="connection-status">Connecting...</span>
       <span id="active-users"></span>
     </div>
