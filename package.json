@@ -5,6 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "./qr.sh && node server.js",
+    "start:https": "HTTPS=true ./qr.sh && HTTPS=true node server.js",
+    "generate-certs": "./generate-certs.sh",
     "build:css": "tailwindcss -i ./src/input.css -o ./public/styles.css --watch"
   },
   "dependencies": {

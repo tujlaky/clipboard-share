@@ -1,5 +1,6 @@
 const express = require('express');
 const http = require('http');
+const https = require('https');
 const socketIo = require('socket.io');
 const path = require('path');
 const { exec } = require('child_process');
@@ -8,7 +9,28 @@ const fs = require('fs');
 
 // Initialize express app
 const app = express();
-const server = http.createServer(app);
+
+// Check for HTTPS mode
+const useHttps = process.env.HTTPS === 'true';
+const certPath = path.join(__dirname, 'certs', 'cert.pem');
+const keyPath = path.join(__dirname, 'certs', 'key.pem');
+
+let server;
+if (useHttps && fs.existsSync(certPath) && fs.existsSync(keyPath)) {
+  const httpsOptions = {
+    key: fs.readFileSync(keyPath),
+    cert: fs.readFileSync(certPath)
+  };
+  server = https.createServer(httpsOptions, app);
+  console.log('Starting server in HTTPS mode');
+} else {
+  server = http.createServer(app);
+  if (useHttps) {
+    console.warn('HTTPS requested but certificates not found. Run ./generate-certs.sh first.');
+    console.warn('Falling back to HTTP mode');
+  }
+}
+
 const io = socketIo(server, {
   maxHttpBufferSize: 50 * 1024 * 1024 // 50MB max file size
 });
@@ -108,6 +130,7 @@ io.on('connection', (socket) => {
 
 // Start server
 const PORT = process.env.PORT || 3000;
+const protocol = useHttps && fs.existsSync(certPath) ? 'https' : 'http';
 server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running at ${protocol}://localhost:${PORT}`);
 });
