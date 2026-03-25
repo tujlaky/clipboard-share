@@ -345,68 +345,7 @@ function formatFileSize(bytes) {
 
 // Helper function to copy text to clipboard with mobile fallback
 function copyToClipboard(text) {
-  return new Promise((resolve, reject) => {
-    // Always use fallback on mobile for reliability
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-    if (!isMobile && navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text)
-        .then(resolve)
-        .catch(() => fallbackCopyToClipboard(text).then(resolve).catch(reject));
-    } else {
-      fallbackCopyToClipboard(text).then(resolve).catch(reject);
-    }
-  });
-}
-
-function fallbackCopyToClipboard(text) {
-  return new Promise((resolve, reject) => {
-    const textArea = document.createElement('textarea');
-    textArea.value = text;
-
-    // Make textarea visible but transparent (required for Android)
-    textArea.style.position = 'fixed';
-    textArea.style.top = '50%';
-    textArea.style.left = '50%';
-    textArea.style.transform = 'translate(-50%, -50%)';
-    textArea.style.width = '1px';
-    textArea.style.height = '1px';
-    textArea.style.padding = '0';
-    textArea.style.border = 'none';
-    textArea.style.outline = 'none';
-    textArea.style.boxShadow = 'none';
-    textArea.style.background = 'transparent';
-    textArea.style.color = 'transparent';
-    textArea.style.caretColor = 'transparent';
-    textArea.style.resize = 'none';
-    textArea.style.zIndex = '99999';
-    textArea.setAttribute('readonly', '');
-    textArea.setAttribute('contenteditable', 'true');
-
-    document.body.appendChild(textArea);
-
-    // Focus and select
-    textArea.focus();
-    textArea.select();
-
-    // Additional selection for iOS/Android
-    textArea.setSelectionRange(0, text.length);
-
-    let successful = false;
-    try {
-      successful = document.execCommand('copy');
-    } catch (err) {
-      console.error('execCommand error:', err);
-    }
-
-    document.body.removeChild(textArea);
-
-    if (successful) {
-      resolve();
-    } else {
-      reject(new Error('Copy failed'));
-    }
-  });
+  return navigator.clipboard.writeText(text);
 }
 
 // Event listeners

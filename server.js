@@ -32,7 +32,7 @@ if (useHttps && fs.existsSync(certPath) && fs.existsSync(keyPath)) {
 }
 
 const io = socketIo(server, {
-  maxHttpBufferSize: 50 * 1024 * 1024 // 50MB max file size
+  maxHttpBufferSize: 500 * 1024 * 1024 // 500MB max file size
 });
 
 // Create uploads directory if it doesn't exist
@@ -52,9 +52,9 @@ const storage = multer.diskStorage({
   }
 });
 
-const upload = multer({ 
+const upload = multer({
   storage: storage,
-  limits: { fileSize: 50 * 1024 * 1024 } // 50MB limit
+  limits: { fileSize: 500 * 1024 * 1024 } // 500MB limit
 });
 
 // Build Tailwind CSS
