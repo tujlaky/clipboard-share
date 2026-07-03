@@ -229,6 +229,33 @@ function sendMessage() {
   }
 }
 
+function getUrlForMessage(text) {
+  const trimmed = text.trim();
+  if (!trimmed || /\s/.test(trimmed)) return null;
+
+  const hasScheme = /^[a-z][a-z\d+.-]*:\/\//i.test(trimmed);
+  const candidate = hasScheme ? trimmed : `https://${trimmed}`;
+
+  try {
+    const url = new URL(candidate);
+    const isWebUrl = url.protocol === 'http:' || url.protocol === 'https:';
+    if (!isWebUrl || !url.hostname) return null;
+
+    if (!hasScheme && !isLikelyWebHost(url.hostname)) return null;
+
+    return url.href;
+  } catch (error) {
+    return null;
+  }
+}
+
+function isLikelyWebHost(hostname) {
+  return hostname === 'localhost'
+    || hostname.includes('.')
+    || /^\d{1,3}(\.\d{1,3}){3}$/.test(hostname)
+    || /^\[[0-9a-f:]+\]$/i.test(hostname);
+}
+
 // Function to add a message to the UI
 function addMessageToUI(message) {
   // Create message card element
@@ -292,7 +319,20 @@ function addMessageToUI(message) {
     // Text message
     const messageText = document.createElement('div');
     messageText.className = 'mb-3 whitespace-pre-wrap break-words text-gray-800 dark:text-gray-200';
-    messageText.textContent = message.text;
+
+    const url = getUrlForMessage(message.text);
+    if (url) {
+      const link = document.createElement('a');
+      link.href = url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.className = 'text-blue-600 dark:text-blue-400 underline hover:text-blue-700 dark:hover:text-blue-300';
+      link.textContent = message.text;
+      messageText.appendChild(link);
+    } else {
+      messageText.textContent = message.text;
+    }
+
     messageCard.appendChild(messageText);
 
     // Add copy button for text
